@@ -26,4 +26,8 @@ public class SoundViewModel extends BaseObservable{
         //通知绑定类，模型视图对象上所有可以绑定的属性都已经更新
         notifyChange();
     }
+
+    public void onButtonClicked() {
+        mBeatBox.play(mSound);
+    }
 }

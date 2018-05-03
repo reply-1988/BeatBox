@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.example.jingj.beatbox.databinding.FragmentBeatBoxBinding;
 import com.example.jingj.beatbox.databinding.ListItemSoundBinding;
@@ -19,11 +21,13 @@ import java.util.List;
 public class BeatBoxFragment extends Fragment {
 
     private BeatBox mBeatBox;
+    private SeekBar mSeekBar;
+    private TextView mTextView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setRetainInstance(true);
         mBeatBox = new BeatBox(getActivity());
     }
 
@@ -38,6 +42,25 @@ public class BeatBoxFragment extends Fragment {
                 .inflate(inflater, R.layout.fragment_beat_box,container, false);
         binding.recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         binding.recyclerView.setAdapter(new SoundAdapter(mBeatBox.getSounds()));
+        mSeekBar = binding.getRoot().findViewById(R.id.seek_bar);
+        mTextView = binding.getRoot().findViewById(R.id.seek_bar_text);
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mBeatBox.setSpeed((progress + 50) / 100);
+                mTextView.setText("播放速度 " + (progress + 50)  + "%");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         return binding.getRoot();
     }
 
@@ -84,4 +107,12 @@ public class BeatBoxFragment extends Fragment {
             return mSounds.size();
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mBeatBox.release();
+    }
+
+
 }
